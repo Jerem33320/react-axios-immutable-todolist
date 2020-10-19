@@ -21,10 +21,7 @@ export default class Todo extends React.Component{
 
     handleEdit = (e) => {
         e.preventDefault();
-        this.props.onEdit({
-            id: this.props.selectedTodo.id,
-            text: this.props.selectedTodo.text
-        }, this.props.todo)
+        this.props.onEdit(this.props.todo.id)
     }
 
     renderTitle = () => {
@@ -44,7 +41,6 @@ export default class Todo extends React.Component{
     render() {
         return(
             <div>{this.renderTitle(this.props.todo)}</div>
-        // <div>{this.props.todoValue}</div>
         )
     }
 }

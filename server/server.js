@@ -20,20 +20,19 @@ server.post('/', function(req, res){
     const newTodo = {id: todos.length + 1, ...req.body};
     todos =  [...todos, newTodo];
 
-    //res.json(todos); // A VOIR PEUT ETRE RENVOYER QUUNE SEULE TODO PB UNIQUE KEY DANS REACT
     res.json(newTodo)
 })
 
-// server.put('/:id', function(req, res) {
-//     const id = parseInt(req.params.id);
-//     const updatedTodo = req.body; 
-//     if(todos[id] != null) {
-//         todos[id] = updatedTodo;
-//         res.json(updatedTodo);
-//     } else {
-//         res.send('Todo dont exist');
-//     }
-// })
+server.put('/:id', function(req, res) {
+    const id = parseInt(req.params.id);
+    const updatedTodo = req.body; 
+    if(todos[id] != null) {
+        todos[id] = updatedTodo;
+        res.json(updatedTodo);
+    } else {
+        res.send('Todo dont exist');
+    }
+})
 
 server.delete('/:id', function(req, res) {
     todos = todos.filter(todo => todo.id !== req.params.id);

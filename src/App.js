@@ -53,17 +53,12 @@ export default class TodoList extends React.Component{
   }
 
   deleteTodo = async (id) => {
-    console.log(id);
     try {
       await api.delete(`/${id}`)
-      // const newDelArr = this.state.todos.filter(todo => console.log(todo))
-      // // console.log(newDelArr);
-      // this.setState({
-      //   todos: newDelArr
-      // })
-      const indexTodo = this.state.todos.indexOf(id)
+      const indexTodo = this.state.todos.indexOf(id);
+      const delTodos = this.state.todos.delete(indexTodo);
       this.setState({
-        todos: this.state.todos.delete(indexTodo)
+        todos: delTodos
       })
       this.getTodos();
     } catch (err) {
@@ -71,21 +66,18 @@ export default class TodoList extends React.Component{
     }
   }
 
-  // const immTodoToSendToServer = maTodo.toJS()
-  // const todoFromServer = await monServer.....
-  // // il update son tableau de son coté et renvoie la meme todo
-  // const immTodoAgain = Map(todoFromServer)
-  // const updatedTodos = this.state.todos.push(immTodoAgain)
-  // editTodo = async (id) => {
-  //   try {
-  //     await api.put(`/${id}`)
-  //     this.setState({
-  //       formValue: this.state.todos.update(id, todo => todo[id].text)
-  //     })
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }
+  handleTodoEdit = async (id) => {
+    try {
+      await api.put(`/${id}`)
+      const updatedTodos = this.state.todos.update(id, todo => todo.text);
+      console.log(updatedTodos);
+      this.setState({
+        formValue: updatedTodos
+      })
+    } catch (err) {
+      console.log(err);
+    }
+  }
   // edit= async (todo) => {
   //   const immTodo = todo.toJS();
   //   try {
@@ -100,33 +92,7 @@ export default class TodoList extends React.Component{
   //     console.log(err)
   //   } 
   // }
-
-  handleValue = (value) => {
-    this.setState({
-      formValue: value
-    })
-  }
-
-  // deleteTodo = (todo) => {
-  //   const indexTodo = this.state.todos.indexOf(todo)
-  //   this.setState({
-  //     todos: this.state.todos.delete(indexTodo)
-  //   })
-  // }
-
-  // editChange = (value) => {
-  //   this.setState({
-  //     formValueEdit: value
-  //   })
-  // }
-
-  handleTodoCancel = () => {
-    this.setState({
-      selectedTodo: {}
-    })
-  }
-
-  // handleTodoEdit = (selectedTodo, todo) => {
+   // handleTodoEdit = (selectedTodo, todo) => {
   //   const updatedTodoText = this.state.formValueEdit;
   //   const indexTodo = this.state.todos.indexOf(todo);
   //   this.setState({
@@ -138,6 +104,24 @@ export default class TodoList extends React.Component{
   //     selectedTodo: {} 
   //   })
   // }
+
+  handleValue = (value) => {
+    this.setState({
+      formValue: value
+    })
+  }
+
+  editChange = (value) => {
+    this.setState({
+      formValueEdit: value
+    })
+  }
+
+  handleTodoCancel = () => {
+    this.setState({
+      selectedTodo: {}
+    })
+  }
 
   actualTodo = (todo) => {
     this.setState({
