@@ -66,44 +66,27 @@ export default class TodoList extends React.Component{
     }
   }
 
-  handleTodoEdit = async (id) => {
+  handleTodoEdit = async (todo) => {
     try {
-      await api.put(`/${id}`)
-      const updatedTodos = this.state.todos.update(id, todo => todo.text);
-      console.log(updatedTodos);
+      await api.put(`/${todo.id}`)
+      const updatedTodoText = this.state.formValueEdit;
+      const indexTodo = this.state.todos.indexOf(todo);
+      const updatedTodos = [...this.state.todos.update(indexTodo, todo => todo = 
+      {
+        id: todo.id,
+        text: updatedTodoText
+      }).toJS()][0];
+
+      const newTodos = [...this.state.todos, updatedTodos]
+
+      console.log(newTodos);
       this.setState({
-        formValue: updatedTodos
+        todos: newTodos
       })
     } catch (err) {
       console.log(err);
     }
   }
-  // edit= async (todo) => {
-  //   const immTodo = todo.toJS();
-  //   try {
-  //     const todoFromServer = await api.post('/');
-  //     const immTodoServer = Map(todoFromServer);
-  //     this.setState({
-  //       todos: this.state.todos.push(immTodoServer),
-  //       formValue: ''
-  //     });
-  //     this.getTodos();
-  //   } catch(err){
-  //     console.log(err)
-  //   } 
-  // }
-   // handleTodoEdit = (selectedTodo, todo) => {
-  //   const updatedTodoText = this.state.formValueEdit;
-  //   const indexTodo = this.state.todos.indexOf(todo);
-  //   this.setState({
-  //     todos: this.state.todos.update(indexTodo, () => todo = 
-  //     {
-  //       id: selectedTodo.id,
-  //       text: updatedTodoText
-  //     }),
-  //     selectedTodo: {} 
-  //   })
-  // }
 
   handleValue = (value) => {
     this.setState({
@@ -153,9 +136,8 @@ export default class TodoList extends React.Component{
                 onCancel={this.handleTodoCancel}
               />
             )
-          }
-          )
-        }
+          })
+        } 
       </div>
     )
   }

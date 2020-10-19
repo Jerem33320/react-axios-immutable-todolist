@@ -21,7 +21,7 @@ export default class Todo extends React.Component{
 
     handleEdit = (e) => {
         e.preventDefault();
-        this.props.onEdit(this.props.todo.id)
+        this.props.onEdit(this.props.todo)
     }
 
     renderTitle = () => {
