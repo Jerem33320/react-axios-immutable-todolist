@@ -68,20 +68,22 @@ export default class TodoList extends React.Component{
 
   handleTodoEdit = async (todo) => {
     try {
-      await api.put(`/${todo.id}`)
       const updatedTodoText = this.state.formValueEdit;
       const indexTodo = this.state.todos.indexOf(todo);
-      const updatedTodos = [...this.state.todos.update(indexTodo, todo => todo = 
-      {
+      const updatedTodo = this.state.todos.update(indexTodo, todo =>
+      ({
         id: todo.id,
         text: updatedTodoText
-      }).toJS()][0];
+      }));
 
-      const newTodos = [...this.state.todos, updatedTodos]
+      // console.log(updatedTodo.get(indexTodo));
+      await api.put(`/${todo.id}`, updatedTodo);
 
-      console.log(newTodos);
+      // console.log(newTodo);
       this.setState({
-        todos: newTodos
+        todos: updatedTodo,
+        formValueEdit: updatedTodo.text,
+        selectedTodo: {}
       })
     } catch (err) {
       console.log(err);
