@@ -35,13 +35,6 @@ server.put('/:id', function(req, res) {
     }
 })
 
-// server.put('/:id', function(req, res) {
-//     const newTodo = {id: todos.length + 1, ...req.body};
-//     todos =  [...todos, newTodo];
-
-//     res.json(newTodo)
-// })
-
 server.delete('/:id', function(req, res) {
     todos = todos.filter(todo => todo.id !== req.params.id);
     res.json({todos});

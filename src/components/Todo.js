@@ -1,7 +1,30 @@
 import React from 'react';
 
+const trashBtn = {
+    background: "#ff6f47",
+    color: "white",
+    border: "none",
+    padding: "4px",
+    cursor: "pointer",
+    fontSize: "1rem",
+    marginLeft: "20px",
+    borderRadius: "4px"
+}
+
+const todoStyle = {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: "20px",
+    paddingLeft: "14px",
+    transition: "all 1s ease",
+    fontSize: "1.4rem"
+}
+
+
+// categorie: "transform: translateY(10rem) rotateZ(20deg)"
+
 export default class Todo extends React.Component{
-    
     handleTodo = () => {
         this.props.onClick(this.props.todo)
     }
@@ -34,13 +57,13 @@ export default class Todo extends React.Component{
         } 
         return <div value={this.props.selectedTodo} onClick={this.handleTodo}>
             {this.props.todoValue}
-            <button onClick={this.handleDelete}>X</button>
+            <button style={trashBtn} onClick={this.handleDelete}>X</button>
         </div>
     }
 
     render() {
         return(
-            <div>{this.renderTitle(this.props.todo)}</div>
+            <div style={todoStyle}>{this.renderTitle(this.props.todo)}</div>
         )
     }
 }

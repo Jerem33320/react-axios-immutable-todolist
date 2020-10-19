@@ -5,6 +5,17 @@ import {List} from 'immutable';
 import axios from 'axios';
 import shortid from 'shortid';
 
+const container = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  width: "100vw",
+  height: "100vh",
+  fontFamily: "Arial, Helvetica, sans-serif",
+  backgroundColor: "rgb(236, 187, 96)",
+  color: "white"
+}
+
 const api = axios.create({
   baseURL: `http://localhost:3001`
 })
@@ -23,6 +34,15 @@ export default class TodoList extends React.Component{
   componentDidMount(){
     this.getTodos();
   }
+
+// Faire une List (comme ce que tu avais) où chaque Todo est un Map
+// comme ca: structure immutable, List + les objets dedans
+// quand tu recuperes Todos depuis le server, tu map dessus
+// et tu transforme chaque entrée en Map
+// et après tu ne fais que modifier des map, ajouter map et supprimer un map
+// quand tu envoies au server, il faut pas envoyer un map,
+// il faut envoyer un objet JS, donc tu fais tonMap.toJS()
+// la logique serveur ne changera pas
 
   getTodos = async () => {
     try{
@@ -76,10 +96,8 @@ export default class TodoList extends React.Component{
         text: updatedTodoText
       }));
 
-      // console.log(updatedTodo.get(indexTodo));
       await api.put(`/${todo.id}`, updatedTodo);
 
-      // console.log(newTodo);
       this.setState({
         todos: updatedTodo,
         formValueEdit: updatedTodo.text,
@@ -116,8 +134,8 @@ export default class TodoList extends React.Component{
   
   render(){
     return(
-      <div>
-        <h1>Test</h1>
+      <div style={container}>
+        <h1>TodoList with React Express Axios Immutable</h1>
         <TodoForm 
           formValue={this.state.formValue}
           onChange={this.handleValue}
