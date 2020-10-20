@@ -21,9 +21,6 @@ const todoStyle = {
     fontSize: "1.4rem"
 }
 
-
-// categorie: "transform: translateY(10rem) rotateZ(20deg)"
-
 export default class Todo extends React.Component{
     handleTodo = () => {
         this.props.onClick(this.props.todo)

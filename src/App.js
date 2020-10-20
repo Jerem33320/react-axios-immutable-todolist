@@ -16,6 +16,10 @@ const container = {
   color: "white"
 }
 
+// const fall = {
+//   transform: "translateY(10rem) rotateZ(20deg)"
+// }
+
 const api = axios.create({
   baseURL: `http://localhost:3001`
 })
@@ -144,7 +148,7 @@ export default class TodoList extends React.Component{
         {
           this.state.todos.map(todo => {
             return (
-              <Todo 
+              <Todo
                 todo={todo}
                 key={todo.id}
                 todoValue={todo.text}

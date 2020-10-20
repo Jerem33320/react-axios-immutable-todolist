@@ -12,7 +12,6 @@ server.use(bodyParser.urlencoded({
 let todos = [];
 
 server.get('/', function(req,res){
-    console.log(todos);
     res.send(todos)
 })
 
@@ -28,7 +27,6 @@ server.put('/:id', function(req, res) {
     const updatedTodo = [...req.body];
     if(id != null) {
         todos = updatedTodo;
-        console.log('todos', todos);
         res.json(todos);
     } else {
         res.send('Todo dont exist');
