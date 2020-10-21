@@ -45,7 +45,7 @@ export default class Todo extends React.Component{
     }
 
     renderTitle = () => {
-        if (this.props.todo.id === this.props.selectedTodo.id) {
+        if (this.props.todo.get("id") === this.props.selectedTodo.toJS().id) {
             return <form>
                 <input onChange={this.handleValue}/>
                 <button onClick={this.handleEdit}>Edit</button>
@@ -53,7 +53,7 @@ export default class Todo extends React.Component{
             </form>
         } 
         return <div value={this.props.selectedTodo} onClick={this.handleTodo}>
-            {this.props.todoValue}
+            {this.props.todo.get('text')}
             <button style={trashBtn} onClick={this.handleDelete}>X</button>
         </div>
     }

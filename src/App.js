@@ -26,7 +26,7 @@ export default class TodoList extends React.Component{
     this.state={
       todos: new List(),
       formValue: '',
-      selectedTodo: {},
+      selectedTodo: new Map(),
       formValueEdit: ''
     }
   }
@@ -84,43 +84,23 @@ export default class TodoList extends React.Component{
       const updatedTodoText = this.state.formValueEdit;
       const indexTodo = this.state.todos.indexOf(mapTodo);
       const updatedTodo = this.state.todos.update(indexTodo, todo =>
-        ({
+        Map({
           id: mapTodo.toJS().id,
           text: updatedTodoText
         }));
 
       await api.put(`/${mapTodo.toJS().id}`, updatedTodo.toJS());
 
+      console.log('updatedTodo', updatedTodo);
       this.setState({
         todos: updatedTodo,
         formValueEdit: updatedTodo.text,
-        selectedTodo: {}
+        selectedTodo: this.state.selectedTodo.clear()
       })
     } catch (err) {
       console.log(err);
     }
   }
-  // handleTodoEdit = async (todo) => {
-  //   try {
-  //     const updatedTodoText = this.state.formValueEdit;
-  //     const indexTodo = this.state.todos.indexOf(todo);
-  //     const updatedTodo = this.state.todos.update(indexTodo, todo =>
-  //     ({
-  //       id: todo.id,
-  //       text: updatedTodoText
-  //     }));
-
-  //     await api.put(`/${todo.id}`, updatedTodo);
-
-  //     this.setState({
-  //       todos: updatedTodo,
-  //       formValueEdit: updatedTodo.text,
-  //       selectedTodo: {}
-  //     })
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }
 
   handleValue = (value) => {
     this.setState({
@@ -136,17 +116,21 @@ export default class TodoList extends React.Component{
 
   handleTodoCancel = () => {
     this.setState({
-      selectedTodo: {}
+      selectedTodo: this.state.selectedTodo.clear()
     })
   }
 
   actualTodo = (todo) => {
+    console.log('todo' , todo);
+    const mapTodo = this.state.selectedTodo.withMutations(map => map.set("id", todo.get("id")).set("text", todo.get("text")))
+    console.log('mapTodo', mapTodo);
     this.setState({
-      selectedTodo: todo
+      selectedTodo: mapTodo
     })
   }
-  
+
   render(){
+    console.log('todos', this.state.todos);
     return(
       <div style={container}>
         <h1>TodoList with React Express Axios Immutable</h1>
