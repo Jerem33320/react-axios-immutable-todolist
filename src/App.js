@@ -20,7 +20,7 @@ const api = axios.create({
   baseURL: `http://localhost:3001`
 })
 
-export default class TodoList extends React.Component{
+class TodoList extends React.Component{
   constructor(){
     super();
     this.state={
@@ -130,7 +130,6 @@ export default class TodoList extends React.Component{
   }
 
   render(){
-    console.log('todos', this.state.todos);
     return(
       <div style={container}>
         <h1>TodoList with React Express Axios Immutable</h1>
@@ -160,3 +159,5 @@ export default class TodoList extends React.Component{
     )
   }
 }
+
+export default TodoList;

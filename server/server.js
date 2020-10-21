@@ -10,9 +10,13 @@ server.use(bodyParser.urlencoded({
 }));
 
 let todos = [];
-
+let users = ["jerem", "hicham"];
 server.get('/', function(req,res){
     res.send(todos)
+})
+
+server.get('/users', function(req, res){
+    res.send(users)
 })
 
 server.post('/', function(req, res){
