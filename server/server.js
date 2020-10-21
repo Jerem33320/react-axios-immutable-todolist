@@ -17,8 +17,7 @@ server.get('/users', function(req, res){
 })
 
 server.post('/users', function(req,res){
-    const newUser = req.body;
-    console.log(newUser);
+    const newUser = Object.keys(req.body);
     users = [...users, newUser];
     res.json(newUser)
 })
