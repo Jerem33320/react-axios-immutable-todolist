@@ -1,4 +1,5 @@
 import React from 'react';
+import {List} from 'immutable';
 import axios from 'axios';
 import {Redirect} from 'react-router-dom';
 
@@ -8,7 +9,7 @@ const homeStyle = {
     alignItems: "center",
     height: "100vh",
     width: "100vw",
-    backgroundColor: "black",
+    backgroundColor: "rgb(33, 83, 150)",
     color: "white",
     fontfamily: "Arial, sans-serif"
 }
@@ -37,12 +38,12 @@ const api = axios.create({
     baseURL: `http://localhost:3001/users`
 })
 
-export default class UserForm extends React.Component{
+export default class UserAuthentication extends React.Component{
     constructor(){
         super();
         this.state={
+          users: new List(),
           loggedIn: false,
-          authenticate: false,
           formValue: ''
         }
       }
@@ -53,21 +54,22 @@ export default class UserForm extends React.Component{
         })
     }
 
-    getUser = async (e) => {
+    createUser = async (e) => {
         e.preventDefault();
         try{
-          const {data} = await api.get('/');
+          const data = this.state.formValue;
+          await api.post('/', data);
           console.log(data);
+          const users = this.state.users.push(data);
+          
           if (data.includes(this.state.formValue)){
               console.log("vous etes co");
               this.setState({
-                loggedIn: true
+                loggedIn: true,
+                users: users
               });              
           } else {
-            console.log("vous n'êtes pas un user autorisé");
-            this.setState({
-                authenticate: true
-              }); 
+            console.log("Authentication failed");
           }
         } catch(err){
           console.log(err);
@@ -77,18 +79,16 @@ export default class UserForm extends React.Component{
     render(){
         if(this.state.loggedIn === true){
             return(<Redirect to="/todolist"/>)
-        } else if (this.state.authenticate === true){
-            return(<Redirect to="/authenticate"/>)
         }
         return(
             <div style={homeStyle}>
-                <h1>Se Connecter à l'App TodoList</h1>
-                <form onSubmit={this.getUser}>
+                <h1>S'authentifier sur l'App TodoList</h1>
+                <form onSubmit={this.createUser}>
                     <input 
                         style={formInput}
                         onChange={this.handleValue}
                     />
-                    <button style={formBtn} disabled={!this.state.formValue} onSubmit={this.getUser}>Se connecter</button>
+                    <button style={formBtn} disabled={!this.state.formValue} onSubmit={this.createUser}>S'authentifier</button>
                 </form>
             </div>
         )

@@ -10,13 +10,21 @@ server.use(bodyParser.urlencoded({
 }));
 
 let todos = [];
-let users = ["jerem", "hicham"];
-server.get('/', function(req,res){
-    res.send(todos)
-})
+let users = ["jerem", "hicham", "julien", "bo"];
 
 server.get('/users', function(req, res){
     res.send(users)
+})
+
+server.post('/users', function(req,res){
+    const newUser = req.body;
+    console.log(newUser);
+    users = [...users, newUser];
+    res.json(newUser)
+})
+
+server.get('/', function(req,res){
+    res.send(todos)
 })
 
 server.post('/', function(req, res){
