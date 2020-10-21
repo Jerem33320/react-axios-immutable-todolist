@@ -1,7 +1,7 @@
 import React from 'react';
 import TodoForm from './components/TodoForm';
 import Todo from './components/Todo';
-import {List} from 'immutable';
+import {List, Map} from 'immutable';
 import axios from 'axios';
 import shortid from 'shortid';
 
@@ -15,10 +15,6 @@ const container = {
   backgroundColor: "rgb(236, 187, 96)",
   color: "white"
 }
-
-// const fall = {
-//   transform: "translateY(10rem) rotateZ(20deg)"
-// }
 
 const api = axios.create({
   baseURL: `http://localhost:3001`
@@ -39,20 +35,12 @@ export default class TodoList extends React.Component{
     this.getTodos();
   }
 
-// Faire une List (comme ce que tu avais) où chaque Todo est un Map
-// comme ca: structure immutable, List + les objets dedans
-// quand tu recuperes Todos depuis le server, tu map dessus
-// et tu transforme chaque entrée en Map
-// et après tu ne fais que modifier des map, ajouter map et supprimer un map
-// quand tu envoies au server, il faut pas envoyer un map,
-// il faut envoyer un objet JS, donc tu fais tonMap.toJS()
-// la logique serveur ne changera pas
-
   getTodos = async () => {
     try{
       const {data} = await api.get('/');
+      const todos = data.map(todo => Map(todo));
       this.setState({
-        todos: List(data)
+        todos: List(todos)
       });
     } catch(err){
       console.log(err);
@@ -61,30 +49,30 @@ export default class TodoList extends React.Component{
 
   addTodo = async () => {
     try {
-      let todo = await api.post('/',{
+      const data = {
         id: shortid.generate(),
         text: this.state.formValue
-      });
-      const mapTodo = todo.data;
-      const newArrOfTodos = [...this.state.todos, mapTodo];
+      };
+
+      await api.post("/", data);
+      const todos =  this.state.todos.push(Map(data));
+      
       this.setState({
-        todos: newArrOfTodos
+        todos: todos
       });
-      this.getTodos();
     } catch(err){
       console.log(err)
     } 
   }
 
-  deleteTodo = async (id) => {
+  deleteTodo = async (todo) => {
     try {
-      await api.delete(`/${id}`)
-      const indexTodo = this.state.todos.indexOf(id);
-      const delTodos = this.state.todos.delete(indexTodo);
+      const indexTodo = this.state.todos.indexOf(todo);
+      await api.delete(`/${todo.toJS().id}`);
+      const todos = this.state.todos.delete(indexTodo);
       this.setState({
-        todos: delTodos
+        todos: todos
       })
-      this.getTodos();
     } catch (err) {
       console.log(err);
     }
@@ -92,15 +80,16 @@ export default class TodoList extends React.Component{
 
   handleTodoEdit = async (todo) => {
     try {
+      const mapTodo = Map(todo)
       const updatedTodoText = this.state.formValueEdit;
-      const indexTodo = this.state.todos.indexOf(todo);
+      const indexTodo = this.state.todos.indexOf(mapTodo);
       const updatedTodo = this.state.todos.update(indexTodo, todo =>
-      ({
-        id: todo.id,
-        text: updatedTodoText
-      }));
+        ({
+          id: mapTodo.toJS().id,
+          text: updatedTodoText
+        }));
 
-      await api.put(`/${todo.id}`, updatedTodo);
+      await api.put(`/${mapTodo.toJS().id}`, updatedTodo.toJS());
 
       this.setState({
         todos: updatedTodo,
@@ -111,6 +100,27 @@ export default class TodoList extends React.Component{
       console.log(err);
     }
   }
+  // handleTodoEdit = async (todo) => {
+  //   try {
+  //     const updatedTodoText = this.state.formValueEdit;
+  //     const indexTodo = this.state.todos.indexOf(todo);
+  //     const updatedTodo = this.state.todos.update(indexTodo, todo =>
+  //     ({
+  //       id: todo.id,
+  //       text: updatedTodoText
+  //     }));
+
+  //     await api.put(`/${todo.id}`, updatedTodo);
+
+  //     this.setState({
+  //       todos: updatedTodo,
+  //       formValueEdit: updatedTodo.text,
+  //       selectedTodo: {}
+  //     })
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
 
   handleValue = (value) => {
     this.setState({

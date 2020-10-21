@@ -27,7 +27,7 @@ export default class Todo extends React.Component{
     }
 
     handleDelete = () => {
-        this.props.onDelete(this.props.todo.id)
+        this.props.onDelete(this.props.todo)
     }
 
     handleValue = (e) => {
