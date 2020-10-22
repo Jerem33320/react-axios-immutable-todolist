@@ -4,6 +4,7 @@ import Todo from './components/Todo';
 import {List, Map} from 'immutable';
 import axios from 'axios';
 import shortid from 'shortid';
+import {NavLink} from 'react-router-dom';
 
 const container = {
   display: "flex",
@@ -19,6 +20,15 @@ const container = {
 const api = axios.create({
   baseURL: `http://localhost:3001`
 })
+
+const Links = () => (
+  <nav>
+      <NavLink 
+        activeStyle={{color: 'red', textDecoration: "none"}} 
+        to="/"
+      >Home</NavLink>
+  </nav>
+)
 
 class TodoList extends React.Component{
   constructor(){
@@ -132,6 +142,7 @@ class TodoList extends React.Component{
   render(){
     return(
       <div style={container}>
+        <Links/>
         <h1>TodoList with React Express Axios Immutable</h1>
         <TodoForm 
           formValue={this.state.formValue}
