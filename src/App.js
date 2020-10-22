@@ -17,6 +17,14 @@ const container = {
   color: "white"
 }
 
+const navStyle = {
+  color: 'white', 
+  fontWeight: "bold",
+  textDecoration: "none", 
+  border: "1px solid white",
+  padding: "10px"
+}
+
 const api = axios.create({
   baseURL: `http://localhost:3001`
 })
@@ -24,7 +32,7 @@ const api = axios.create({
 const Links = () => (
   <nav>
       <NavLink 
-        activeStyle={{color: 'red', textDecoration: "none"}} 
+        activeStyle={navStyle}
         to="/"
       >Home</NavLink>
   </nav>
@@ -42,7 +50,8 @@ class TodoList extends React.Component{
   }
 
   componentDidMount(){
-    this.getTodos();
+    // this.getTodos();
+    this.getUserTodos();
   }
 
   getTodos = async () => {
@@ -56,6 +65,19 @@ class TodoList extends React.Component{
       console.log(err);
     }
   }
+
+  getUserTodos = async() => {
+    try{
+      const userData = await api.get(`${this.props.location.pathname}`);
+      const todos = userData.data.map(todo => Map(todo));
+      this.setState({
+        todos: List(todos)
+      });
+    } catch(err){
+      console.log(err);
+    }
+  }
+  
 
   addTodo = async () => {
     try {
@@ -101,7 +123,6 @@ class TodoList extends React.Component{
 
       await api.put(`/${mapTodo.toJS().id}`, updatedTodo.toJS());
 
-      console.log('updatedTodo', updatedTodo);
       this.setState({
         todos: updatedTodo,
         formValueEdit: updatedTodo.text,
@@ -131,9 +152,7 @@ class TodoList extends React.Component{
   }
 
   actualTodo = (todo) => {
-    console.log('todo' , todo);
     const mapTodo = this.state.selectedTodo.withMutations(map => map.set("id", todo.get("id")).set("text", todo.get("text")))
-    console.log('mapTodo', mapTodo);
     this.setState({
       selectedTodo: mapTodo
     })
@@ -142,8 +161,8 @@ class TodoList extends React.Component{
   render(){
     return(
       <div style={container}>
-        <Links/>
-        <h1>TodoList with React Express Axios Immutable</h1>
+        <Links />
+        <h1>Welcome on the {this.props.location.pathname}</h1>
         <TodoForm 
           formValue={this.state.formValue}
           onChange={this.handleValue}

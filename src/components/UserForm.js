@@ -43,7 +43,8 @@ export default class UserForm extends React.Component{
         this.state={
           loggedIn: false,
           authenticate: false,
-          formValue: ''
+          formValue: '',
+          currentUser: ''
         }
       }
 
@@ -57,16 +58,17 @@ export default class UserForm extends React.Component{
         e.preventDefault();
         try{
           const {data} = await api.get('/');
-          console.log(data);
           if (data.includes(this.state.formValue)){
               console.log("vous etes co");
               this.setState({
-                loggedIn: true
+                loggedIn: true,
+                currentUser: this.state.formValue
               });              
           } else {
             console.log("vous n'êtes pas un user autorisé");
             this.setState({
-                authenticate: true
+                authenticate: true,
+                currentUser: ''
               }); 
           }
         } catch(err){
@@ -76,7 +78,7 @@ export default class UserForm extends React.Component{
 
     render(){
         if(this.state.loggedIn === true){
-            return(<Redirect to="/todolist"/>)
+            return(<Redirect to={"/todolist/"+ this.state.currentUser}/>)
         } else if (this.state.authenticate === true){
             return(<Redirect to="/authenticate"/>)
         }
