@@ -34,13 +34,19 @@ const formBtn = {
     marginLeft: "20px"
 }
 
+const errorValid = {
+    color: 'red',
+    marginTop: "10px"
+}
+
 export default class UserAuthentication extends React.Component{
     constructor(){
         super();
         this.state={
           users: new List(),
           authIn: false,
-          formValue: ''
+          formValue: '',
+          error: ''
         }
       }
 
@@ -55,6 +61,10 @@ export default class UserAuthentication extends React.Component{
         try{
             // {"jerem":{"name":"jerem","todos":[]}}
             const name = this.state.formValue;
+            if (/[^a-zA-Z -]/.test(name)) {
+                return this.setState({error: 'Invalide caractère...'});
+            }
+
             const user = {
                 [name]: {
                   name: name,
@@ -91,9 +101,10 @@ export default class UserAuthentication extends React.Component{
                     <input 
                         style={formInput}
                         onChange={this.handleValue}
-                    />
+                        />
                     <button style={formBtn} disabled={!this.state.formValue} onSubmit={this.createUser}>S'authentifier</button>
                 </form>
+                <div style={errorValid}>{this.state.error}</div>
             </div>
         )
     }

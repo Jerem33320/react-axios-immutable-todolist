@@ -39,12 +39,9 @@ export default class UserForm extends React.Component{
     constructor(props){
         super(props);
         this.state={
-          users: new List(),
           loggedIn: false,
           authenticate: false,
           formValue: '',
-          actualUser: '',
-          actualTodos: []
         }
       }
 
