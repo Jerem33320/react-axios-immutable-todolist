@@ -36,26 +36,11 @@ server.get('/shop', function(req,res){
 server.post('/:name', function(req, res){
     const name = req.params.name;
     const todoValue = req.body;
-    console.log("TEST ADD Todo : ", todoValue);
-
-    let username = usersTodos[name].name;
-    console.log('username', username);
-    console.log('todos', usersTodos[name].todos);
-    ///travailler sur addTodo check username 
-    ///pas besoin de faire if
-    ///push todo dans les todos du user
-             
-    // if(name === username) {
-    //     // usersTodos.map((key, index) => {
-    //     //     usersTodos.user[key] = [...usersTodos.user[key], todoValue];
-    //     //     const userTodo = usersTodos.user[key];
-    //     //     usersTodos = {...usersTodos, userTodo}
-    //     //     console.log("userstodos of add todo", usersTodos);
-    //     // })
-    // }
+    // console.log("TEST ADD Todo : ", todoValue);
+   
     let todos = usersTodos[name].todos;
     todos = [...todos, todoValue];
-    console.log("todos", todos);
+    // console.log("todos", usersTodos[name].todos);
     res.json(todos)
 })
 
@@ -64,9 +49,9 @@ server.delete('/:name/:id', function(req, res) {
     const name = req.params.name;
     const id = req.params.id;
     
-    const todos = usersTodos.user[name].todos.filter(todo => todo.id !== id);
-    res.json({todos})
-
+    console.log("deltodos:" , usersTodos[name].todos);
+    const todos = usersTodos[name].todos.filter(todo => todo.id !== id);
+    res.json(todos)
 })
 
 server.put('/:id', function(req, res) {

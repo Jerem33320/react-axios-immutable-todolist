@@ -1,6 +1,7 @@
 import {Record, List} from 'immutable';
 
 const _reviveProps = ({...props}) => {
+  // console.log('reviveProps PROPS: ' , props);
   if (typeof props.todos !== 'undefined' && props.todos.length > 0) {
     props.todos = List(props.todos);
   }
@@ -8,8 +9,8 @@ const _reviveProps = ({...props}) => {
 }
 
 const UserRecord = new Record({
-  name: undefined,
-  todos: new List()
+    name: undefined,
+    todos: new List()
 });
 
 export default class User extends UserRecord {

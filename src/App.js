@@ -34,7 +34,6 @@ class TodoList extends React.Component{
       selectedTodo: new Map(),
       formValueEdit: '',
       currentUser: '',
-      islogged: false,
       username: '',
     }
   }
@@ -43,33 +42,19 @@ class TodoList extends React.Component{
     this.getUserTodos();
   }
 
-  // componentDidUpdate(){
-  //   if (!this.state.username) { 
-  //     this.setState({
-  //       username: this.props.location.pathname.match(/\w+/)[0]
-  //     })
-  //   }
-  // }
-
   getUserTodos = async () => {
     try{
-      // const name = this.props.history.location.pathname.match(/\w+/)[0];
-      const user = await axios.get('http://localhost:3001/shop');
-      const immUser = new User(user.data);
-      const name = Object.keys(user.data).shift();
-      
-      if(!this.state.username){
-        this.setState({
-          username: name
-        });
-      }
+      const data = await axios.get('http://localhost:3001/shop');
+      const userObject = Object.values(data.data);
+      const immUser = new User(userObject[0]);
 
-      const findTodos = user.data[name].todos;
+      const name = Object.keys(data.data).shift();
+      const findTodos = data.data[name].todos;
       const todos = findTodos.map(todo => Map(todo));
       this.setState({
         todos: List(todos),
         currentUser: immUser,
-        islogged: true,
+        username: name
       });
     } catch(err){
       console.log(err);
@@ -78,22 +63,20 @@ class TodoList extends React.Component{
 
   addTodo = async () => {
     try {
-        const data = {
-          id: shortid.generate(),
-          text: this.state.formValue
-        };
+      const data = {
+        id: shortid.generate(),
+        text: this.state.formValue
+      };
 
-        await axios.post('http://localhost:3001/'+ this.state.username, data);
-      
-        console.log('todos', this.state.todos);
-        const todos =  this.state.todos.push(Map(data));
-        const immUserTodos = this.state.currentUser.todos.push(todos);
-        // const sortTodos = immUserTodos.sortBy(todo => todo.id)
-        console.log('immUserTodos: ' , immUserTodos);
-        
-        this.setState({
-          todos: todos,
-        });
+      await axios.post('http://localhost:3001/'+ this.state.username, data);
+      const todos =  this.state.todos.push(Map(data));
+//HICHAM
+// const updatedUser = this.state.currentUserUser.update('todos', todosList => todosList.push(id_todo)
+// this.setState({currentUser: updatedUser});
+      this.state.currentUser.todos.push(todos);
+      this.setState({
+        todos: todos,
+      });
     } catch(err){
       console.log(err)
     } 
@@ -101,13 +84,20 @@ class TodoList extends React.Component{
 
   deleteTodo = async (todo) => {
     try {
+      const data = await axios.delete('http://localhost:3001/'+ this.state.username + `/${todo.toJS().id}`);
       const indexTodo = this.state.todos.indexOf(todo);
-      // await axios.delete(`${this.props.location.pathname}/${todo.toJS().id}`);
       const todos = this.state.todos.delete(indexTodo);
-      // if (indexTodo === this.state.currentUser.todos.get(todo).toJS())
-      
-      const indexTodoCurrentUSer = this.state.currentUser.todos.indexOf(todo);
-      this.state.currentUser.todos.delete(indexTodoCurrentUSer);
+
+      console.log('currentUser:', this.state.currentUser.toJS().todos);
+      console.log('todo', todo);
+      console.log("data del todo", data);
+
+//HICHAM
+// const updatedUser = this.state.loggedUser.update('todos', todosList => todosList.remove(id_todo)
+// this.setState({loggedUser: updatedUser});
+// console.log(this.state.currentUser.todos);
+      const indexTodoCurrentUser = this.state.currentUser.todos.indexOf(todo);
+      this.state.currentUser.todos.delete(indexTodoCurrentUser);
       this.setState({
         todos: todos,
       })
@@ -181,11 +171,6 @@ class TodoList extends React.Component{
   // }
 
   render(){
-    // if(this.state.username === ''){
-    //   console.log('render username: ', this.state.username);
-    //   this.getUserTodos();
-    // }
-
     return(
       <div style={container}>
         {/* <Links /> */}
