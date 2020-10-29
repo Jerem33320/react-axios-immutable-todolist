@@ -54,21 +54,23 @@ class TodoList extends React.Component{
   getUserTodos = async () => {
     try{
       // const name = this.props.history.location.pathname.match(/\w+/)[0];
-      const user = axios.get('http://localhost:3001/shop');
-      console.log(user.data);
-      console.log("userData",user);
-      // const immUser = new User(userData);
+      const user = await axios.get('http://localhost:3001/shop');
+      const immUser = new User(user.data);
+      const name = Object.keys(user.data).shift();
+      
+      if(!this.state.username){
+        this.setState({
+          username: name
+        });
+      }
 
-      // if(this.props.location.pathname === '/login'){
-      //   this.setState({
-      //     currentUser: immUser,
-      //     islogged: true,
-      //   });
-      //   }
-      //   const todos = userData.data.map(todo => Map(todo));
-      // this.setState({
-      //   todos: todos
-      // });
+      const findTodos = user.data[name].todos;
+      const todos = findTodos.map(todo => Map(todo));
+      this.setState({
+        todos: todos,
+        currentUser: immUser,
+        islogged: true,
+      });
     } catch(err){
       console.log(err);
     }
@@ -76,19 +78,18 @@ class TodoList extends React.Component{
 
   addTodo = async () => {
     try {
-      const data = {
-        id: shortid.generate(),
-        text: this.state.formValue
-      };
+        const data = {
+          id: shortid.generate(),
+          text: this.state.formValue
+        };
 
-      // const name = this.props.location.pathname.match(/\w/).input;
-        await axios.post('http://localhost:3001', data);
-      // if(name !== null){
+        await axios.post('http://localhost:3001/'+ this.state.username, data);
+      
+        console.log('todos', this.state.todos);
         const todos =  this.state.todos.push(Map(data));
         const immUserTodos = this.state.currentUser.todos.push(todos);
         // const sortTodos = immUserTodos.sortBy(todo => todo.id)
         console.log('immUserTodos: ' , immUserTodos);
-        // console.log('sortTodos: ' , sortTodos);
         
         this.setState({
           todos: todos,

@@ -28,9 +28,8 @@ server.get('/login', function(req, res){
 
 //getTodos
 server.get('/shop', function(req,res){
-    const name = req.params.name;
-    const userTodos = usersTodos[name].todos;
-    res.json(userTodos)
+    res.status(200)
+    res.json(usersTodos)
 })
 
 //AddTodo
