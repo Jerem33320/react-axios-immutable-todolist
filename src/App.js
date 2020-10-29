@@ -4,7 +4,7 @@ import Todo from './components/Todo';
 import {List, Map} from 'immutable';
 import axios from 'axios';
 import shortid from 'shortid';
-import {NavLink} from 'react-router-dom';
+import User from './entities/User';
 
 const container = {
   display: "flex",
@@ -17,26 +17,13 @@ const container = {
   color: "white"
 }
 
-const navStyle = {
-  color: 'white', 
-  fontWeight: "bold",
-  textDecoration: "none", 
-  border: "1px solid white",
-  padding: "10px"
-}
-
-const api = axios.create({
-  baseURL: `http://localhost:3001`
-})
-
-const Links = () => (
-  <nav>
-      <NavLink 
-        activeStyle={navStyle}
-        to="/"
-      >Home</NavLink>
-  </nav>
-)
+// const navStyle = {
+//   color: 'white', 
+//   fontWeight: "bold",
+//   textDecoration: "none", 
+//   border: "1px solid white",
+//   padding: "10px"
+// }
 
 class TodoList extends React.Component{
   constructor(){
@@ -45,39 +32,47 @@ class TodoList extends React.Component{
       todos: new List(),
       formValue: '',
       selectedTodo: new Map(),
-      formValueEdit: ''
+      formValueEdit: '',
+      currentUser: '',
+      islogged: false,
+      username: '',
     }
   }
 
   componentDidMount(){
-    // this.getTodos();
     this.getUserTodos();
   }
 
-  getTodos = async () => {
-    try{
-      const {data} = await api.get('/');
-      const todos = data.map(todo => Map(todo));
-      this.setState({
-        todos: List(todos)
-      });
-    } catch(err){
-      console.log(err);
-    }
-  }
+  // componentDidUpdate(){
+  //   if (!this.state.username) { 
+  //     this.setState({
+  //       username: this.props.location.pathname.match(/\w+/)[0]
+  //     })
+  //   }
+  // }
 
-  getUserTodos = async() => {
+  getUserTodos = async () => {
     try{
-      const userData = await api.get(`${this.props.location.pathname}`);
-      const todos = userData.data.map(todo => Map(todo));
-      this.setState({
-        todos: List(todos)
-      });
+      // const name = this.props.history.location.pathname.match(/\w+/)[0];
+      const user = axios.get('http://localhost:3001/shop');
+      console.log(user.data);
+      console.log("userData",user);
+      // const immUser = new User(userData);
+
+      // if(this.props.location.pathname === '/login'){
+      //   this.setState({
+      //     currentUser: immUser,
+      //     islogged: true,
+      //   });
+      //   }
+      //   const todos = userData.data.map(todo => Map(todo));
+      // this.setState({
+      //   todos: todos
+      // });
     } catch(err){
       console.log(err);
     }
   }
-  
 
   addTodo = async () => {
     try {
@@ -86,12 +81,21 @@ class TodoList extends React.Component{
         text: this.state.formValue
       };
 
-      await api.post("/", data);
-      const todos =  this.state.todos.push(Map(data));
-      
-      this.setState({
-        todos: todos
-      });
+      // const name = this.props.location.pathname.match(/\w/).input;
+        await axios.post('http://localhost:3001', data);
+      // if(name !== null){
+        const todos =  this.state.todos.push(Map(data));
+        const immUserTodos = this.state.currentUser.todos.push(todos);
+        // const sortTodos = immUserTodos.sortBy(todo => todo.id)
+        console.log('immUserTodos: ' , immUserTodos);
+        // console.log('sortTodos: ' , sortTodos);
+        
+        this.setState({
+          todos: todos,
+        });
+      // } else {
+      //   console.log('Oops something went wrong on adding Todo')
+      // }
     } catch(err){
       console.log(err)
     } 
@@ -100,10 +104,14 @@ class TodoList extends React.Component{
   deleteTodo = async (todo) => {
     try {
       const indexTodo = this.state.todos.indexOf(todo);
-      await api.delete(`/${todo.toJS().id}`);
+      // await axios.delete(`${this.props.location.pathname}/${todo.toJS().id}`);
       const todos = this.state.todos.delete(indexTodo);
+      // if (indexTodo === this.state.currentUser.todos.get(todo).toJS())
+      
+      const indexTodoCurrentUSer = this.state.currentUser.todos.indexOf(todo);
+      this.state.currentUser.todos.delete(indexTodoCurrentUSer);
       this.setState({
-        todos: todos
+        todos: todos,
       })
     } catch (err) {
       console.log(err);
@@ -121,7 +129,14 @@ class TodoList extends React.Component{
           text: updatedTodoText
         }));
 
-      await api.put(`/${mapTodo.toJS().id}`, updatedTodo.toJS());
+      const indexTodoCurrentUser = this.state.currentUser.todos.indexOf(mapTodo);
+      const updatedImmTodo = this.state.currentUser.todos.update(indexTodoCurrentUser, todo =>
+        Map({
+          id: mapTodo.toJS().id,
+          text: updatedTodoText
+        }));
+        console.log(updatedImmTodo);
+      // await api.put(`/${mapTodo.toJS().id}`, updatedTodo.toJS());
 
       this.setState({
         todos: updatedTodo,
@@ -158,11 +173,31 @@ class TodoList extends React.Component{
     })
   }
 
+  // logout = async() => {
+  //   await api.get('/logout');
+  //   this.setState({
+  //     islogged: false,
+  //     currentUser: 'unset'
+  //   })
+  //   console.log("vous êtes déco");
+  // }
+
   render(){
+    // if(this.state.username === ''){
+    //   console.log('render username: ', this.state.username);
+    //   this.getUserTodos();
+    // }
+
     return(
       <div style={container}>
-        <Links />
-        <h1>Welcome on the {this.props.location.pathname}</h1>
+        {/* <Links /> */}
+        {/* <nav>
+            <NavLink 
+              activeStyle={navStyle}
+              to="/login"
+            ><button onClick={this.logout}>Logout</button></NavLink>
+        </nav> */}
+        <h1>Welcome on your TodoList {this.state.username}</h1>
         <TodoForm 
           formValue={this.state.formValue}
           onChange={this.handleValue}

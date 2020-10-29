@@ -1,6 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import {Redirect} from 'react-router-dom';
+import {List} from 'immutable';
+
 
 const homeStyle = {
     display: "flex",
@@ -33,18 +35,16 @@ const formBtn = {
     marginLeft: "20px"
 }
 
-const api = axios.create({
-    baseURL: `http://localhost:3001/users`
-})
-
 export default class UserForm extends React.Component{
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state={
+          users: new List(),
           loggedIn: false,
           authenticate: false,
           formValue: '',
-          currentUser: ''
+          actualUser: '',
+          actualTodos: []
         }
       }
 
@@ -57,18 +57,19 @@ export default class UserForm extends React.Component{
     getUser = async (e) => {
         e.preventDefault();
         try{
-          const {data} = await api.get('/');
-          if (data.includes(this.state.formValue)){
+          const user = await axios.get('http://localhost:3001/login');
+          const name = this.state.formValue;
+          
+          if (user.data[name].name === name){
               console.log("vous etes co");
               this.setState({
                 loggedIn: true,
-                currentUser: this.state.formValue
+                formValue: name
               });              
           } else {
             console.log("vous n'êtes pas un user autorisé");
             this.setState({
                 authenticate: true,
-                currentUser: ''
               }); 
           }
         } catch(err){
@@ -78,7 +79,7 @@ export default class UserForm extends React.Component{
 
     render(){
         if(this.state.loggedIn === true){
-            return(<Redirect to={"/todolist/"+ this.state.currentUser}/>)
+            return(<Redirect to={"/shop"}/>)
         } else if (this.state.authenticate === true){
             return(<Redirect to="/authenticate"/>)
         }

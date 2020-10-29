@@ -34,16 +34,12 @@ const formBtn = {
     marginLeft: "20px"
 }
 
-const api = axios.create({
-    baseURL: `http://localhost:3001/users`
-})
-
 export default class UserAuthentication extends React.Component{
     constructor(){
         super();
         this.state={
           users: new List(),
-          loggedIn: false,
+          authIn: false,
           formValue: ''
         }
       }
@@ -57,15 +53,23 @@ export default class UserAuthentication extends React.Component{
     createUser = async (e) => {
         e.preventDefault();
         try{
-          const data = this.state.formValue;
-          await api.post('/', data);
-          console.log(data);
-          const users = this.state.users.push(data);
+            // {"jerem":{"name":"jerem","todos":[]}}
+            const name = this.state.formValue;
+            const user = {
+                [name]: {
+                  name: name,
+                  todos: []
+                }
+              }
+
+          await axios.post('http://localhost:3001/auth', user);
           
-          if (data.includes(this.state.formValue)){
-              console.log("vous etes co");
+          const users = this.state.users.push(user);
+          
+          if (user[name].name === name){
+              console.log("Auth success");
               this.setState({
-                loggedIn: true,
+                authIn: true,
                 users: users
               });              
           } else {
@@ -77,8 +81,8 @@ export default class UserAuthentication extends React.Component{
     }
 
     render(){
-        if(this.state.loggedIn === true){
-            return(<Redirect to="/todolist"/>)
+        if(this.state.authIn === true){
+            return(<Redirect to="/login"/>)
         }
         return(
             <div style={homeStyle}>

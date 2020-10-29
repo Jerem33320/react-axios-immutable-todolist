@@ -7,9 +7,9 @@ import { BrowserRouter as Router, Route} from 'react-router-dom';
 const AppRoutes = (props) => (
     <Router>
       <div>
-        <Route exact path="/" component={UserForm} />
+        <Route exact path="/login" component={UserForm} />
         <Route path="/authenticate" component={UserAuthentication} />
-        <Route path="/todolist" component={TodoList}/>
+        <Route path="/shop" component={TodoList}/>
       </div>
     </Router>
 )
