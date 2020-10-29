@@ -67,7 +67,7 @@ class TodoList extends React.Component{
       const findTodos = user.data[name].todos;
       const todos = findTodos.map(todo => Map(todo));
       this.setState({
-        todos: todos,
+        todos: List(todos),
         currentUser: immUser,
         islogged: true,
       });
@@ -94,9 +94,6 @@ class TodoList extends React.Component{
         this.setState({
           todos: todos,
         });
-      // } else {
-      //   console.log('Oops something went wrong on adding Todo')
-      // }
     } catch(err){
       console.log(err)
     } 
