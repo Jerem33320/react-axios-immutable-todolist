@@ -70,9 +70,7 @@ class TodoList extends React.Component{
 
       await axios.post('http://localhost:3001/'+ this.state.username, data);
       const todos =  this.state.todos.push(Map(data));
-//HICHAM
-// const updatedUser = this.state.currentUserUser.update('todos', todosList => todosList.push(id_todo)
-// this.setState({currentUser: updatedUser});
+
       this.state.currentUser.todos.push(todos);
       this.setState({
         todos: todos,
@@ -84,20 +82,10 @@ class TodoList extends React.Component{
 
   deleteTodo = async (todo) => {
     try {
-      const data = await axios.delete('http://localhost:3001/'+ this.state.username + `/${todo.toJS().id}`);
+      await axios.delete('http://localhost:3001/'+ this.state.username + `/${todo.toJS().id}`);
       const indexTodo = this.state.todos.indexOf(todo);
       const todos = this.state.todos.delete(indexTodo);
 
-      console.log('currentUser:', this.state.currentUser.toJS().todos);
-      console.log('todo', todo);
-      console.log("data del todo", data);
-
-//HICHAM
-// const updatedUser = this.state.loggedUser.update('todos', todosList => todosList.remove(id_todo)
-// this.setState({loggedUser: updatedUser});
-// console.log(this.state.currentUser.todos);
-      const indexTodoCurrentUser = this.state.currentUser.todos.indexOf(todo);
-      this.state.currentUser.todos.delete(indexTodoCurrentUser);
       this.setState({
         todos: todos,
       })
@@ -116,15 +104,6 @@ class TodoList extends React.Component{
           id: mapTodo.toJS().id,
           text: updatedTodoText
         }));
-
-      const indexTodoCurrentUser = this.state.currentUser.todos.indexOf(mapTodo);
-      const updatedImmTodo = this.state.currentUser.todos.update(indexTodoCurrentUser, todo =>
-        Map({
-          id: mapTodo.toJS().id,
-          text: updatedTodoText
-        }));
-        console.log(updatedImmTodo);
-      // await api.put(`/${mapTodo.toJS().id}`, updatedTodo.toJS());
 
       this.setState({
         todos: updatedTodo,
